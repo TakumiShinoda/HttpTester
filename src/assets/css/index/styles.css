@@ -2,12 +2,7 @@ body{
   -webkit-user-select: none;
   -webkit-app-region: drag;
   background: rgba(122, 122, 122, 0.95);
-  margin-top: 20px;
-  padding: 10px;
-}
-
-.container{
-  margin: 0;
+  width: 100%;
 }
 
 .dragmovable{
@@ -22,4 +17,52 @@ body{
   background: rgb(255, 255, 255);
   width: 320px;
   height: 200px;
+}
+
+#header h1{
+  font-size: 50px;
+}
+
+#menu{
+  padding: 0;
+  margin: 0;
+  background: black;
+  width: 100%;
+}
+
+#menu ul{
+  width: 100%;
+  padding: 0;
+  font-size: 0px;
+}
+
+#menu ul li{
+  color: white;
+  font-size: 25px;
+  margin: 0;
+  text-align: center;
+  padding: 5px;
+  border-right: 1px solid rgb(80, 80, 80);
+  display: inline-block;
+  width: 50%;
+}
+
+#menu ul li:hover{
+  opacity: 0.5;
+  background: rgb(120, 120, 120);
+  color: white;
+}
+
+#content{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+#home{
+  display: none;
+}
+
+#add{
+  display: none;
 }
