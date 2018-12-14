@@ -8,6 +8,7 @@ module.exports = {
       output: {
         filename: routes + ".js"
       },
+      target: "electron-renderer",
       module: {
         rules: [
           {

@@ -8,5 +8,12 @@ include ../_header.pug
   div#content
     div#home
       p hoge
-    div#add  
-      p fuga
+    div#add
+      div.registerForm
+        span Label: 
+        input#registerLabel.form-control(type="text")
+      div.registerForm
+        span url: 
+        input#registerUrl.form-control(type="text")
+      br
+      input#registerButton.btn.btn-primary(type="button" value="登録")

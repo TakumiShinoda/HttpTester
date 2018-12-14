@@ -65,4 +65,14 @@ body{
 
 #add{
   display: none;
+  width: 80%;
+  margin: auto;
+}
+
+.registerForm{
+  margin-bottom: 3vh;
+}
+
+.form-control{
+  width: 40%;
 }
