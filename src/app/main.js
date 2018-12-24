@@ -27,7 +27,7 @@ app.on('ready', () => {
 
   getFromStorage('data')
     .catch(() => {
-      saveToStorage('data', [{"dammy": "http://hogehoge.com"}])
+      saveToStorage('data', [{"url": "http://hogehoge.com", "label": "dammy"}])
         .catch(() => {
           if(err) process.exit()
         });

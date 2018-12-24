@@ -35,33 +35,25 @@ function updateConsole(text: string): void{
   $('#consoleArea').val(text)
 }
 
-$(document).ready(() => {
-  show_hide('#home', true)
-  show_hide('#add', false)
+function updateUrlList(){
+  let urls: object = getUrls()
+  let urlsObjKeys: string[] = Object.keys(urls) 
+  let tbody: JQuery = $('#urlList tbody')
 
-  console.log(getUrls())
+  tbody.empty()
+  urlsObjKeys.forEach((k: string) => {
+    let tr: JQuery = $('<tr class=requestButton>')
+    let obj: {url: string, label: string} = (urls as any)[k]
+    let url: string = obj.url
+    let label: string = obj.label
 
-  $('#menu_home').on('click', () => {
-    show_hide('#home', true)
-    show_hide('#add', false)
+    tr.append($('<td>').append(label))
+    tr.append($('<td>').append(url))
+    tbody.append(tr)
   })
+}
 
-  $('#menu_add').on('click', () => {
-    show_hide('#home', false)
-    show_hide('#add', true)
-  })
-
-  $('#registerButton').on('click', () => {
-    let url: string | number | string[] | undefined = $('#registerUrl').val();
-    let label: string | number | string[] | undefined = $('#registerLabel').val();
-
-    if(typeof(url) == 'string' && typeof(label) == 'string' && label != '' && url != ''){
-      postUrl(url, label)
-    }else{
-      alert('Type Url')
-    }
-  })
-
+function reattachEvents(){
   $('.requestButton').click((ev: any) => {
     let lineElements: HTMLCollection = ev.currentTarget.children
     let url: string | null = lineElements[1].textContent
@@ -77,6 +69,36 @@ $(document).ready(() => {
         })
     }else{
       alert("Failed to access.")
+    }
+  })
+}
+
+$(document).ready(() => {
+  show_hide('#home', true)
+  show_hide('#add', false)
+  updateUrlList()
+  reattachEvents()
+
+  $('#menu_home').on('click', () => {
+    show_hide('#home', true)
+    show_hide('#add', false)
+    updateUrlList()
+    reattachEvents()
+  })
+
+  $('#menu_add').on('click', () => {
+    show_hide('#home', false)
+    show_hide('#add', true)
+  })
+
+  $('#registerButton').on('click', () => {
+    let url: string | number | string[] | undefined = $('#registerUrl').val();
+    let label: string | number | string[] | undefined = $('#registerLabel').val();
+
+    if(typeof(url) == 'string' && typeof(label) == 'string' && label != '' && url != ''){
+      postUrl(url, label)
+    }else{
+      alert('Type Url')
     }
   })
 })
