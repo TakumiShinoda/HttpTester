@@ -13,12 +13,6 @@ body{
   -webkit-app-region: no-drag;
 }
 
-#webviewExm1{
-  background: rgb(255, 255, 255);
-  width: 320px;
-  height: 200px;
-}
-
 #header h1{
   font-size: 50px;
 }
@@ -61,6 +55,36 @@ body{
 
 #home{
   display: none;
+}
+
+#urlListArea{
+  height: 60%;
+  overflow: scroll;
+}
+
+#urlList{
+  font-size: 30px;
+  width: 80%;
+  margin: auto;
+  border-radius: 10px;
+  text-align: left;
+}
+
+#urlList thead{
+  border-radius: 10px;
+}
+
+.requestButton:hover{
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+#consoleArea{
+  width: 80%;
+  height: 23%;
+  margin: auto;
+  background: black;
+  color: white;
 }
 
 #add{
