@@ -105,6 +105,10 @@ body{
   margin-bottom: 3vh;
 }
 
+.registerForm span{
+  font-size: 30px;
+}
+
 .form-control{
   width: 40%;
 }

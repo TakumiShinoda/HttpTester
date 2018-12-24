@@ -22,9 +22,14 @@ function getUrls(): Object{
   return ipcRenderer.sendSync("getData")[0]
 }
 
+function updateConsole(text: string){
+  $('#consoleArea').val(text);
+}
+
 $(document).ready(() => {
   show_hide('#home', true)
   show_hide('#add', false)
+  updateConsole('hoge')
 
   $('#menu_home').on('click', () => {
     show_hide('#home', true)
@@ -44,6 +49,24 @@ $(document).ready(() => {
       postUrl(url, label)
     }else{
       alert('Type Url')
+    }
+  })
+
+  $('.requestButton').click((ev: any) => {
+    let lineElements: HTMLCollection = ev.currentTarget.children
+    let url: string | null = lineElements[1].textContent
+
+    if(url != null){
+      fetch(url)
+        .then((data: any) => data.text())
+        .then((text: any) => {
+          updateConsole(text)
+        })
+        .catch((err: any) => {
+          alert("Failed to access.")
+        })
+    }else{
+      alert("Failed to access.")
     }
   })
 })

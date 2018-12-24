@@ -1,0 +1,1 @@
+node -max-old-space-size=3000000000000 $(which npm) start
