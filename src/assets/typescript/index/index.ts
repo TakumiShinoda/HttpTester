@@ -15,7 +15,10 @@ function show_hide(ele: string, open: boolean= true): void{
 }
 
 function postUrl(url: string, label: string): void{
-  if(ipcRenderer.sendSync("saveUrl", url, label)){
+  let result = ipcRenderer.sendSync("saveUrl", url, label)
+
+  console.log(result)
+  if(result == true){
     alert('Saved')
     $('#registerLabel').val('')
     $('#registerUrl').val('')

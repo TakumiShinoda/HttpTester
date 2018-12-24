@@ -6,7 +6,7 @@ const Storage = require('electron-json-storage');
 function getFromStorage(key){
   return new Promise((res, rej) => {
     Storage.get('data', (err, data) => {
-      if(err){
+      if(err || Object.keys(data).length == 0){
         rej(err);
       }
       else{
@@ -19,6 +19,17 @@ function getFromStorage(key){
 app.on('ready', () => {
   const Screen = electron.screen;
   const size = Screen.getPrimaryDisplay().size;
+
+  getFromStorage('data')
+    .then(() => {
+      console.log("hoge");
+    })
+    .catch(() => {
+      Storage.set('data', [{"dammy": "http://hogehoge.com"}], (err) => {
+        if(err) process.exit();
+      });
+    });
+
   mainWindow = new BrowserWindow({
     width: size.width,
     height: size.height,
