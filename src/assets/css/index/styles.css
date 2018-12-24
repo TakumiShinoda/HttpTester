@@ -62,6 +62,10 @@ body{
   overflow: scroll;
 }
 
+#urlListArea::-webkit-scrollbar{
+  display: none;
+}
+
 #urlListHeader{
   font-size: 30px;
   width: 80%;
@@ -93,6 +97,10 @@ body{
   margin: auto;
   background: black;
   color: white;
+}
+
+#consoleArea::-webkit-scrollbar{
+  display: none;
 }
 
 #add{
