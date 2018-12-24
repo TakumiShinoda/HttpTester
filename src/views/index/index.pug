@@ -7,12 +7,13 @@ include ../_header.pug
       li#menu_add Add
   div#content
     div#home
+      table#urlListHeader.table.table-dark
+          thead
+            tr
+              th(width="26%") Label
+              th Url
       div#urlListArea
         table#urlList.table
-          thead.thead-dark 
-            tr
-              th.row-6 Label
-              th.row-6 Url
           tbody
             tr.requestButton
               td テスト
