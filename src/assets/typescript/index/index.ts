@@ -15,21 +15,28 @@ function show_hide(ele: string, open: boolean= true): void{
 }
 
 function postUrl(url: string, label: string): void{
-  ipcRenderer.send("saveUrl", url, label)
+  if(ipcRenderer.sendSync("saveUrl", url, label)){
+    alert('Saved')
+    $('#registerLabel').val('')
+    $('#registerUrl').val('')
+  }else{
+    alert("Error")
+  }
 }
 
 function getUrls(): Object{
-  return ipcRenderer.sendSync("getData")[0]
+  return ipcRenderer.sendSync("getData")
 }
 
-function updateConsole(text: string){
-  $('#consoleArea').val(text);
+function updateConsole(text: string): void{
+  $('#consoleArea').val(text)
 }
 
 $(document).ready(() => {
   show_hide('#home', true)
   show_hide('#add', false)
-  updateConsole('hoge')
+
+  console.log(getUrls())
 
   $('#menu_home').on('click', () => {
     show_hide('#home', true)

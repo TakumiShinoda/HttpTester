@@ -42,17 +42,18 @@ app.on('ready', () => {
       .then((data) => {
         let json = data;
 
-        console.log(typeof(data));
-
         json.push(block);
-        console.log(data);
         Storage.set('data', json, (err) => {
-          if(err) console.log("Save Error: ", err);
-          else console.log("saved");
+          if(err){
+            ev.returnValue = err;
+          }
+          else{
+            ev.returnValue = true;
+          }
         });
       })
       .catch((err) => {
-        console.log("hoge");
+        ev.returnValue = err;
       }) 
   });
 
