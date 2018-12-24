@@ -6,14 +6,19 @@ const Storage = require('electron-json-storage');
 function getFromStorage(key){
   return new Promise((res, rej) => {
     Storage.get('data', (err, data) => {
-      if(err || Object.keys(data).length == 0){
-        rej(err);
-      }
-      else{
-        res(data);
-      } 
+      if(err || Object.keys(data).length == 0) rej(err);
+      else res(data);
     });
   })
+}
+
+function saveToStorage(key, json){
+  return new Promise((res, rej) => {
+    Storage.set(key, json, (err) => {
+      if(err) rej(err);
+      else res();
+    })
+  });
 }
 
 app.on('ready', () => {
@@ -21,13 +26,11 @@ app.on('ready', () => {
   const size = Screen.getPrimaryDisplay().size;
 
   getFromStorage('data')
-    .then(() => {
-      console.log("hoge");
-    })
     .catch(() => {
-      Storage.set('data', [{"dammy": "http://hogehoge.com"}], (err) => {
-        if(err) process.exit();
-      });
+      saveToStorage('data', [{"dammy": "http://hogehoge.com"}])
+        .catch(() => {
+          if(err) process.exit()
+        });
     });
 
   mainWindow = new BrowserWindow({
@@ -54,27 +57,18 @@ app.on('ready', () => {
         let json = data;
 
         json.push(block);
-        Storage.set('data', json, (err) => {
-          if(err){
-            ev.returnValue = err;
-          }
-          else{
-            ev.returnValue = true;
-          }
-        });
+        saveToStorage('data', json)
+          .then(() => { ev.returnValue = true })
+          .catch((err) => { ev.returnValue = err });
       })
       .catch((err) => {
         ev.returnValue = err;
-      }) 
+      });
   });
 
   ipcMain.on('getData', (ev) => {
     getFromStorage('data')
-      .then((data) => {
-        ev.returnValue = data;
-      })
-      .catch((err) => {
-        ev.returnValue = err;
-      })
-  })
+      .then((data) => { ev.returnValue = data })
+      .catch((err) => { ev.returnValue = err });
+  });
 });
