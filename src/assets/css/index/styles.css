@@ -73,6 +73,23 @@ body{
   text-align: left;
 }
 
+#urlListHeader th{
+  position: relative;
+}
+
+#deleteSwitch{
+  background: red;
+  width: 40px;
+  border-radius: 40px;
+  text-align: center;
+  line-height: 40px;
+  margin: 0 0 0 auto;
+}
+
+#deleteSwitch:hover{
+  cursor: pointer;
+}
+
 #urlList{
   font-size: 30px;
   width: 80%;
@@ -87,8 +104,11 @@ body{
 }
 
 .requestButton:hover{
-  opacity: 0.5;
+  transition: 1s;
+  color: white;
+  background: black;
   cursor: pointer;
+  border-bottom: 1px solid white;
 }
 
 #consoleArea{

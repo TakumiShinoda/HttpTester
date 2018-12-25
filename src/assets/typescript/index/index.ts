@@ -4,8 +4,10 @@ import {ipcRenderer} from 'electron'
 import Test from './module'
 
 import '../../css/index/styles.css'
+import { STATUS_CODES } from 'http';
 
 const {distPath, srcPath} = require('../../../../dev/path.js')
+let StateDeleteMode: boolean = false
 
 function show_hide(ele: string, open: boolean= true): void{
   let element: JQuery<HTMLElement> = $(ele)
@@ -42,13 +44,18 @@ function updateUrlList(){
 
   tbody.empty()
   urlsObjKeys.forEach((k: string) => {
+    let deleteBut: JQuery
     let tr: JQuery = $('<tr class=requestButton>')
     let obj: {url: string, label: string} = (urls as any)[k]
     let url: string = obj.url
     let label: string = obj.label
 
+    if(StateDeleteMode) deleteBut = $('<input class="btn btn-danger deleteButton" type=button value=Delete style="right: 0;">')
+    else deleteBut = $('<input class="btn btn-danger deleteButton" type=button value=Delete style="right: 0;display: none;">')
+
     tr.append($('<td width=26%>').append(label))
     tr.append($('<td>').append(url))
+    tr.append($('<td>').append(deleteBut))
     tbody.append(tr)
   })
 }
@@ -58,17 +65,27 @@ function reattachEvents(){
     let lineElements: HTMLCollection = ev.currentTarget.children
     let url: string | null = lineElements[1].textContent
 
-    if(url != null){
-      fetch(url)
-        .then((data: any) => data.text())
-        .then((text: any) => {
-          updateConsole(text)
-        })
-        .catch((err: any) => {
-          alert("Failed to access.")
-        })
+    if(StateDeleteMode){
+      let conf = confirm('Are you sure?')
+
+      if(conf){
+        console.log('delete')
+      }else{
+        console.log('cancel')
+      }
     }else{
-      alert("Failed to access.")
+      if(url != null){
+        fetch(url)
+          .then((data: any) => data.text())
+          .then((text: any) => {
+            updateConsole(text)
+          })
+          .catch((err: any) => {
+            alert("Failed to access.")
+          })
+      }else{
+        alert("Failed to access.")
+      }
     }
   })
 }
@@ -100,5 +117,19 @@ $(document).ready(() => {
     }else{
       alert('Type Url')
     }
+  })
+
+  $('#deleteSwitch').on('click', () => {
+    let switchElement: JQuery = $('#deleteSwitch')
+    let deleteButtonElements = $('.deleteButton')
+
+    if(StateDeleteMode){
+      deleteButtonElements.css('display', 'none')
+      switchElement.text('-')
+    }else{
+      deleteButtonElements.css('display', 'block')
+      switchElement.text('x')
+    }
+    StateDeleteMode = !StateDeleteMode
   })
 })
