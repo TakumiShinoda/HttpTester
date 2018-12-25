@@ -47,7 +47,7 @@ function updateUrlList(){
     let url: string = obj.url
     let label: string = obj.label
 
-    tr.append($('<td>').append(label))
+    tr.append($('<td width=26%>').append(label))
     tr.append($('<td>').append(url))
     tbody.append(tr)
   })
