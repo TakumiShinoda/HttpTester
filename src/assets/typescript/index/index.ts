@@ -1,5 +1,5 @@
 import $ = require('jquery')
-import {ipcRenderer} from 'electron'
+import {ipcRenderer, nativeImage} from 'electron'
 
 import Test from './module'
 
@@ -19,7 +19,6 @@ function show_hide(ele: string, open: boolean= true): void{
 function postUrl(url: string, label: string): void{
   let result = ipcRenderer.sendSync("saveUrl", url, label)
 
-  console.log(result)
   if(result == true){
     alert('Saved')
     $('#registerLabel').val('')
@@ -33,45 +32,56 @@ function getUrls(): Object{
   return ipcRenderer.sendSync("getData")
 }
 
+function deleteUrl(id: number): boolean{
+  if(ipcRenderer.sendSync("deleteUrl", id) == true) return true
+  else return false
+}
+
 function updateConsole(text: string): void{
   $('#consoleArea').val(text)
 }
 
-function updateUrlList(){
+function updateUrlList(): void{
   let urls: object = getUrls()
   let urlsObjKeys: string[] = Object.keys(urls) 
   let tbody: JQuery = $('#urlList tbody')
 
   tbody.empty()
   urlsObjKeys.forEach((k: string) => {
+    let obj: {url: string, label: string, id: number} | null = (urls as any)[k]
+    let id: number | null = obj != null ? obj.id : null;
+    let url: string | null = obj != null ? obj.url : null;
+    let label: string | null = obj != null ? obj.label : null
     let deleteBut: JQuery
-    let tr: JQuery = $('<tr class=requestButton>')
-    let obj: {url: string, label: string} = (urls as any)[k]
-    let url: string = obj.url
-    let label: string = obj.label
+    let tr: JQuery = $('<tr class=requestButton name=' + id + '>')
 
-    if(StateDeleteMode) deleteBut = $('<input class="btn btn-danger deleteButton" type=button value=Delete style="right: 0;">')
-    else deleteBut = $('<input class="btn btn-danger deleteButton" type=button value=Delete style="right: 0;display: none;">')
+    if(id != null  && url != null && label != null) {
+      if(StateDeleteMode) deleteBut = $('<input class="btn btn-danger deleteButton" type=button value=Delete style="right: 0;">')
+      else deleteBut = $('<input class="btn btn-danger deleteButton" type=button value=Delete style="right: 0;display: none;">')
 
-    tr.append($('<td width=26%>').append(label))
-    tr.append($('<td>').append(url))
-    tr.append($('<td>').append(deleteBut))
-    tbody.append(tr)
+      tr.append($('<td width=26%>').append(label))
+      tr.append($('<td>').append(url))
+      tr.append($('<td>').append(deleteBut))
+      tbody.append(tr)
+    } 
   })
 }
 
 function reattachEvents(){
-  $('.requestButton').click((ev: any) => {
+  $('.requestButton').click((ev: any): void => {
     let lineElements: HTMLCollection = ev.currentTarget.children
     let url: string | null = lineElements[1].textContent
 
     if(StateDeleteMode){
       let conf = confirm('Are you sure?')
+      let selectedId: number = parseInt(ev.currentTarget.attributes.name.textContent)
 
-      if(conf){
-        console.log('delete')
-      }else{
-        console.log('cancel')
+      if(conf && selectedId != undefined && selectedId != NaN){
+        if(deleteUrl(selectedId)){
+          updateUrlList()
+        }else{
+          alert('Failed to delete.')
+        }
       }
     }else{
       if(url != null){

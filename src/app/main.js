@@ -21,13 +21,37 @@ function saveToStorage(key, json){
   });
 }
 
+function deleteFromStorage(key, id){
+  return new Promise((res, rej) => {
+    getFromStorage()
+      .then((data) => {
+        let dataKeys = Object.keys(data);
+
+        for(var i = 0; i < dataKeys.length; i++){
+          if(id == data[i].id){
+            data.splice(i, 1);
+            break;
+          }
+          if(i == data.length - 1) rej();
+        }
+
+        saveToStorage('data', data)
+          .then(() => { res(true); })
+          .catch((err) => { rej(err); });
+      })
+      .catch((err) => {
+        rej(err);
+      });
+  });
+}
+
 app.on('ready', () => {
   const Screen = electron.screen;
   const size = Screen.getPrimaryDisplay().size;
 
   getFromStorage('data')
     .catch(() => {
-      saveToStorage('data', [{"url": "http://hogehoge.com", "label": "dammy"}])
+      saveToStorage('data', [{"id": 1, "url": "http://hogehoge.com", "label": "dammy"}])
         .catch(() => {
           if(err) process.exit()
         });
@@ -46,6 +70,12 @@ app.on('ready', () => {
     mainWindow = null;
   });
 
+  ipcMain.on('deleteUrl', (ev, id) => {
+    deleteFromStorage('data', id)
+      .then(() => { ev.returnValue = true; })
+      .catch((err) => { ev.returnValue = err; });
+  })
+
   ipcMain.on('saveUrl', (ev, url, label) => {
     let block = {
       "url": url,
@@ -55,7 +85,10 @@ app.on('ready', () => {
     getFromStorage('data')
       .then((data) => {
         let json = data;
+        let ids = [];
 
+        for(var i = 0; i < json.length; i++) isNaN(json[i].id) ? pass : ids.push(json[i].id);
+        block['id'] = Math.max.apply(null, ids) + 1;
         json.push(block);
         saveToStorage('data', json)
           .then(() => { ev.returnValue = true })
