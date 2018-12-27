@@ -4,7 +4,6 @@ import {ipcRenderer, nativeImage} from 'electron'
 import Test from './module'
 
 import '../../css/index/styles.css'
-import { STATUS_CODES } from 'http';
 
 const {distPath, srcPath} = require('../../../../dev/path.js')
 let StateDeleteMode: boolean = false
@@ -16,15 +15,14 @@ function show_hide(ele: string, open: boolean= true): void{
   else element.css('display', 'none')
 }
 
-function postUrl(url: string, label: string): void{
+function postUrl(url: string, label: string): boolean{
   let result = ipcRenderer.sendSync("saveUrl", url, label)
 
   if(result == true){
-    alert('Saved')
-    $('#registerLabel').val('')
-    $('#registerUrl').val('')
+    return true
   }else{
     alert("Error")
+    return false
   }
 }
 
@@ -43,7 +41,7 @@ function updateConsole(text: string): void{
 
 function updateUrlList(): void{
   let urls: object = getUrls()
-  let urlsObjKeys: string[] = Object.keys(urls) 
+  let urlsObjKeys: string[] = Object.keys(urls)
   let tbody: JQuery = $('#urlList tbody')
 
   tbody.empty()
@@ -63,7 +61,7 @@ function updateUrlList(): void{
       tr.append($('<td>').append(url))
       tr.append($('<td>').append(deleteBut))
       tbody.append(tr)
-    } 
+    }
   })
 }
 
@@ -100,46 +98,78 @@ function reattachEvents(){
   })
 }
 
+function openHome(){
+  show_hide('#home', true)
+  show_hide('#add', false)
+  updateUrlList()
+  reattachEvents()
+}
+
+function openAdd(){
+  show_hide('#home', false)
+  show_hide('#add', true)
+  $('#registerLabel').focus()
+}
+
+function changeDeleteMode(){
+  let switchElement: JQuery = $('#deleteSwitch')
+  let deleteButtonElements = $('.deleteButton')
+
+  if(StateDeleteMode){
+    deleteButtonElements.css('display', 'none')
+    switchElement.text('-')
+  }else{
+    deleteButtonElements.css('display', 'block')
+    switchElement.text('x')
+  }
+  StateDeleteMode = !StateDeleteMode
+}
+
+function registerSubmit(){
+  let url: string | number | string[] | undefined = $('#registerUrl').val();
+  let label: string | number | string[] | undefined = $('#registerLabel').val();
+
+  if(typeof(url) == 'string' && typeof(label) == 'string' && label != '' && url != ''){
+    if(postUrl(url, label)){
+      alert('Saved')
+      $('#registerLabel').val('')
+      $('#registerUrl').val('')
+    }else alert('Failed to save.')
+  }else{
+    alert('Type Url.')
+  }
+  $('#registerLabel').focus()
+}
+
 $(document).ready(() => {
   show_hide('#home', true)
   show_hide('#add', false)
   updateUrlList()
   reattachEvents()
 
-  $('#menu_home').on('click', () => {
-    show_hide('#home', true)
-    show_hide('#add', false)
-    updateUrlList()
-    reattachEvents()
-  })
+  $('#menu_home').on('click', () => { openHome() })
 
-  $('#menu_add').on('click', () => {
-    show_hide('#home', false)
-    show_hide('#add', true)
-  })
+  $('#menu_add').on('click', () => { openAdd() })
+  
+  $('#deleteSwitch').on('click', () => { changeDeleteMode() })
 
-  $('#registerButton').on('click', () => {
-    let url: string | number | string[] | undefined = $('#registerUrl').val();
-    let label: string | number | string[] | undefined = $('#registerLabel').val();
+  $('#registerButton').on('click', () => { registerSubmit() })
 
-    if(typeof(url) == 'string' && typeof(label) == 'string' && label != '' && url != ''){
-      postUrl(url, label)
-    }else{
-      alert('Type Url')
+  $('#registerUrl').keypress((ev: any) => { if(ev.key == "Enter") registerSubmit() })
+
+  $(document).keydown((ev: any) => {
+    if(ev.metaKey){
+      switch(ev.key){
+        case 'ArrowLeft':
+          openHome()
+          break
+        case 'ArrowRight':
+          openAdd()
+          break
+        case 'd':
+          changeDeleteMode()
+          break
+      }
     }
-  })
-
-  $('#deleteSwitch').on('click', () => {
-    let switchElement: JQuery = $('#deleteSwitch')
-    let deleteButtonElements = $('.deleteButton')
-
-    if(StateDeleteMode){
-      deleteButtonElements.css('display', 'none')
-      switchElement.text('-')
-    }else{
-      deleteButtonElements.css('display', 'block')
-      switchElement.text('x')
-    }
-    StateDeleteMode = !StateDeleteMode
   })
 })
