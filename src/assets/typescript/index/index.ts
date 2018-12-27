@@ -65,7 +65,7 @@ function updateUrlList(): void{
   })
 }
 
-function reattachEvents(){
+function reattachEvents(): void{
   $('.requestButton').click((ev: any): void => {
     let lineElements: HTMLCollection = ev.currentTarget.children
     let url: string | null = lineElements[1].textContent
@@ -77,6 +77,7 @@ function reattachEvents(){
       if(conf && selectedId != undefined && selectedId != NaN){
         if(deleteUrl(selectedId)){
           updateUrlList()
+          reattachEvents()
         }else{
           alert('Failed to delete.')
         }

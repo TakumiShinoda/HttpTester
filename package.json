@@ -4,7 +4,7 @@
   "description": "",
   "main": "./src/app/main.js",
   "scripts": {
-    "start": "gulp start",
+    "start": "$(which gulp) --max_old_space_size=3000000000 start",
     "clean": "rm -R ./dist/",
     "clean-start": "npm run clean || npm start && npm start",
     "compile-pug": "gulp pug_compile",
