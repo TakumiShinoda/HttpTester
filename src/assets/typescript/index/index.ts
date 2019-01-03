@@ -1,10 +1,12 @@
 import $ = require('jquery')
 import {ipcRenderer, nativeImage} from 'electron'
 
+import ConsoleArea from './ConsoleArea'
 import Test from './module'
 
 import '../../css/index/styles.css'
 
+const consoleUpperBar = new ConsoleArea($)
 const {distPath, srcPath} = require('../../../../dev/path.js')
 let StateDeleteMode: boolean = false
 
@@ -36,7 +38,7 @@ function deleteUrl(id: number): boolean{
 }
 
 function updateConsole(text: string): void{
-  $('#consoleArea').val(text)
+  $('#consoleMonitor').text(text)
 }
 
 function updateUrlList(): void{
@@ -147,6 +149,9 @@ $(document).ready(() => {
   show_hide('#add', false)
   updateUrlList()
   reattachEvents()
+  consoleUpperBar.onReady()
+
+  consoleUpperBar.setHoverEvent()
 
   $('#menu_home').on('click', () => { openHome() })
 

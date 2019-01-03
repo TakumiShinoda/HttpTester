@@ -98,11 +98,6 @@ body{
   border-radius: 10px;
 }
 
-#urlList thead{
-  border-radius: 10px;
-  text-align: left;
-}
-
 .requestButton:hover{
   transition: 1s;
   color: white;
@@ -117,10 +112,35 @@ body{
   margin: auto;
   background: black;
   color: white;
+  overflow: scroll;
+  position: relative;
+  padding: 0;
 }
 
 #consoleArea::-webkit-scrollbar{
   display: none;
+}
+
+#consoleUpperBar{
+  color: white;
+  position: fixed;
+  width: 79.8%;
+  background:rgb(47, 47, 47);
+  opacity: 0;
+}
+
+.consoleUpperBarButtons{
+  font-size: 10px; 
+  margin: 2px;
+  margin-right: 5px;
+  padding: 4px;
+  float: right;
+  display: block;
+  text-align: right;
+}
+
+#consoleMonitor{ 
+  overflow: scroll;
 }
 
 #add{

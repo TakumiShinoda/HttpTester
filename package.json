@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/jquery": "^3.3.14",
+    "@types/jquery": "^3.3.29",
     "css-loader": "^1.0.0",
     "electron": "^2.0.5",
     "electron-connect": "^0.6.3",
