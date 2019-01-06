@@ -3,6 +3,8 @@ const {app, BrowserWindow, ipcMain} = electron;
 const {distPath} = require('../../dev/path');
 const Storage = require('electron-json-storage');
 
+let WebWindowSrc = "";
+
 function getFromStorage(key){
   return new Promise((res, rej) => {
     Storage.get('data', (err, data) => {
@@ -48,6 +50,12 @@ function deleteFromStorage(key, id){
 app.on('ready', () => {
   const Screen = electron.screen;
   const size = Screen.getPrimaryDisplay().size;
+  let mainWindow = new BrowserWindow({
+    width: size.width,
+    height: size.height,
+    resizable: true,
+    movable: true,
+  });
 
   getFromStorage('data')
     .catch(() => {
@@ -57,24 +65,33 @@ app.on('ready', () => {
         });
     });
 
-  mainWindow = new BrowserWindow({
-    width: size.width,
-    height: size.height,
-    resizable: true,
-    movable: true,
-  });
-
   mainWindow.loadURL('file://' + distPath.views('/index/index.html'));
 
   mainWindow.on('closed', () => { 
     mainWindow = null;
   });
 
+  ipcMain.on('getWebWindowSrc', (ev) => { ev.returnValue = WebWindowSrc });
+
+  ipcMain.on('openWebWindow', (ev, html) => {
+    let webWindow = new BrowserWindow({
+      width: size.width,
+      height: size.height,
+      resizable: true,
+      movable: true
+    });
+    
+    WebWindowSrc = html;
+    webWindow.loadURL('file://' + distPath.views('/webWindow/index.html'));
+    webWindow.webContents.send('sendHtmlSrc', 'hoge');
+    ev.returnValue = true;
+  });
+
   ipcMain.on('deleteUrl', (ev, id) => {
     deleteFromStorage('data', id)
       .then(() => { ev.returnValue = true; })
       .catch((err) => { ev.returnValue = err; });
-  })
+  });
 
   ipcMain.on('saveUrl', (ev, url, label) => {
     let block = {

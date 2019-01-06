@@ -5,7 +5,7 @@ module.exports = {
   config: (routes) => {
     return {
       mode: 'development',
-      entry: './src/assets/typescript/index/index.ts',
+      entry: './src/assets/typescript/' + routes + '/index.ts',
       output: {
         filename: routes + ".js"
       },

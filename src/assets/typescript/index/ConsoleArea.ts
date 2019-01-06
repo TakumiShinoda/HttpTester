@@ -1,3 +1,5 @@
+import { ipcRenderer } from "electron";
+
 export default class ConsoleArea{
   $: JQueryStatic
   Parent: JQuery
@@ -25,9 +27,7 @@ export default class ConsoleArea{
     this.Buttons = this.$(ConsoleArea.ChildSelector.buttons)
     this.UpperBar = this.$(ConsoleArea.ChildSelector.upperBar)
     this.Monitor = this.$(ConsoleArea.ChildSelector.monitor)
-  }
 
-  setHoverEvent(){
     $(ConsoleArea.Selector).hover(
       (ev: any) => {
         this.Monitor.css({'padding-top': '30px'})
@@ -40,5 +40,9 @@ export default class ConsoleArea{
         this.Buttons.css({'transition': '0.8s', 'opacity': '0'})
       }
     )
+
+    $(this.Buttons).click((ev: any) => {
+      ipcRenderer.sendSync('openWebWindow', 'hoge')
+    })
   }
 }

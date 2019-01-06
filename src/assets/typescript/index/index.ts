@@ -1,5 +1,5 @@
 import $ = require('jquery')
-import {ipcRenderer, nativeImage} from 'electron'
+import {ipcRenderer} from 'electron'
 
 import ConsoleArea from './ConsoleArea'
 import Test from './module'
@@ -150,8 +150,6 @@ $(document).ready(() => {
   updateUrlList()
   reattachEvents()
   consoleUpperBar.onReady()
-
-  consoleUpperBar.setHoverEvent()
 
   $('#menu_home').on('click', () => { openHome() })
 
