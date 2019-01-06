@@ -143,6 +143,10 @@ body{
   overflow: scroll;
 }
 
+#consoleMonitor::-webkit-scrollbar{
+  display: none;
+}
+
 #add{
   display: none;
   width: 80%;
