@@ -82,8 +82,9 @@ app.on('ready', () => {
     });
     
     WebWindowSrc = html;
+    webWindow.html = html;
+    webWindow.webContents.once('dom-ready', () => { webWindow.webContents.send('sendHtmlSrc', html) });
     webWindow.loadURL('file://' + distPath.views('/webWindow/index.html'));
-    webWindow.webContents.send('sendHtmlSrc', 'hoge');
     ev.returnValue = true;
   });
 

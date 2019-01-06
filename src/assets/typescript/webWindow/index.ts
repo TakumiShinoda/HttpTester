@@ -1,11 +1,13 @@
 import $ = require('jquery')
 import {ipcRenderer} from 'electron'
 
-import '../../css/index/styles.css'
+import Editor from './Editor'
+
+import './style.css'
+
+let bodyEditor = new Editor($)
 
 $(document).ready(() => {
-  $('#webArea').append('hoge')
-
   ipcRenderer.on('sendHtmlSrc', (ev: any, src: string) => {
     console.log(src)
   })

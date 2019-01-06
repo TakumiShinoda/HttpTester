@@ -42,7 +42,7 @@ export default class ConsoleArea{
     )
 
     $(this.Buttons).click((ev: any) => {
-      ipcRenderer.sendSync('openWebWindow', 'hoge')
+      ipcRenderer.sendSync('openWebWindow', this.Monitor.text())
     })
   }
 }

@@ -1,0 +1,9 @@
+body, html{
+  width: 100%;
+}
+
+#webArea{
+  width: 50%;
+  margin: auto;
+  overflow: hidden;
+}
