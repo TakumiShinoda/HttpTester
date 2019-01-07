@@ -98,11 +98,11 @@ function reattachEvents(): void{
       }
     }else{
       if(url != null){
+        updateConsole('Connecting...')
         sendGetRequest(url)
           .then((body: string) => { updateConsole(body) })
           .catch((err: any) => {
-            console.log('Fetch Error: ', err)
-            alert("Failed to access.")
+            updateConsole("Failed to access.\n\n" + err)
           })
       }
     }
