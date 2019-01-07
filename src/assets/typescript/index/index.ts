@@ -2,12 +2,11 @@ import $ = require('jquery')
 import {ipcRenderer} from 'electron'
 
 import ConsoleArea from './ConsoleArea'
-import Test from './module'
+import Utils from './Utils'
 
 import '../../css/index/styles.css'
 
 const consoleUpperBar = new ConsoleArea($)
-const {distPath, srcPath} = require('../../../../dev/path.js')
 let StateDeleteMode: boolean = false
 
 function show_hide(ele: string, open: boolean= true): void{
@@ -67,6 +66,19 @@ function updateUrlList(): void{
   })
 }
 
+function sendGetRequest(url: string): Promise<string>{
+  return new Promise((res, rej) => {
+    Utils.limit(5000, (t_res: any, t_rej: any) => {
+      fetch(url)
+        .then((data: any) => data.text())
+        .then((text: any) => { t_res(text) })
+        .catch((err: any) => { t_rej(err) })
+    })
+    .then((body: string) => { res(body) })
+    .catch((err: any) => { rej(err) })
+  })
+}
+
 function reattachEvents(): void{
   $('.requestButton').click((ev: any): void => {
     let lineElements: HTMLCollection = ev.currentTarget.children
@@ -86,16 +98,12 @@ function reattachEvents(): void{
       }
     }else{
       if(url != null){
-        fetch(url)
-          .then((data: any) => data.text())
-          .then((text: any) => {
-            updateConsole(text)
-          })
+        sendGetRequest(url)
+          .then((body: string) => { updateConsole(body) })
           .catch((err: any) => {
+            console.log('Fetch Error: ', err)
             alert("Failed to access.")
           })
-      }else{
-        alert("Failed to access.")
       }
     }
   })
