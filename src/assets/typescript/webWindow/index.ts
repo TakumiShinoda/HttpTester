@@ -5,10 +5,12 @@ import Editor from './Editor'
 
 import './style.css'
 
-let bodyEditor = new Editor($)
+let bodyEditor = new Editor($, 'editor')
 
 $(document).ready(() => {
+  bodyEditor.render()
+  
   ipcRenderer.on('sendHtmlSrc', (ev: any, src: string) => {
-    console.log(src)
+    bodyEditor.setText(src)
   })
 }) 
